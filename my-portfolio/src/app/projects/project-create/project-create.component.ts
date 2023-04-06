@@ -1,6 +1,6 @@
 
 import {Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormControl, FormGroup, NgForm , Validators} from '@angular/forms';
 import { ProjectService } from '../project.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Project } from '../project.model';
@@ -15,40 +15,54 @@ import { Project } from '../project.model';
  export class ProjectCreateComponent implements OnInit{
   enteredTitle ='';
   enteredContent = '';
+  project: Project;
+  form: FormGroup;
   private mode = 'create';
   private projectId : string;
-  project: Project;
+  
 
   constructor(public projectsService: ProjectService, public route: ActivatedRoute){}
 
   ngOnInit() {
-    this.route.paramMap.subscribe((paramMap: ParamMap) => {
+    this.form = new FormGroup({
+      'title' : new FormControl(null,{validators: 
+        [Validators.required, Validators.minLength(5)]}),
+        'content' : new FormControl(null,{validators:[Validators.required,]})
+      });
+      this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has('projectId')) {
         this.mode ='edit';
         this.projectId = paramMap.get('projectId');
         this.projectsService.getProject(this.projectId)
         .subscribe(project => {
-          this.project = {id: project._id, title: project.title, content: project.content};
-        })      }else {
+          this.project = {id: project._id, 
+            title: project.title,
+             content: project.content
+            };
+            this.form.setValue({title: this.project.title,
+               content:this. project.content
+              });
+        });  
+         }else {
         this.mode = 'create';
         this.projectId = null;
       }
     });
   }
 
-  onSaveProject(form: NgForm) {
-    if (form.invalid) {
+  onSaveProject() {
+    if (this.form.invalid) {
       return ;
     }
     if (this.mode === 'create') {
-      this.projectsService.addProject(form.value.id,form.value.title, form.value.content);
+      this.projectsService.addProject(this.form.value.id, this.form.value.title, this.form.value.content);
     }else { this.projectsService.updateProject(
         this.projectId,
-        form.value.title, 
-        form.value.content
+        this.form.value.title, 
+        this.form.value.content
       );
     }
-    form.resetForm();
+    this.form.reset();
   }
 
   
