@@ -1,0 +1,25 @@
+
+
+<mat-card>
+  <form (submit)="onSaveProject(projectForm)" #projectForm = "ngForm">
+    <mat-form-field>
+      <input matInput type="text"
+    name="title"
+    placeholder="Title"
+    [ngModel]="project?.title" required #title = "ngModel">
+    <mat-error *ngIf="title.invalid">Provide a project Title</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <textarea matInput rows="6" 
+      name="content" placeholder="Content"
+       [ngModel]="project?.content" required
+      #content = "ngModel"></textarea>
+      <mat-error *ngIf="content.invalid">Provide a project description </mat-error>
+    </mat-form-field>
+    <button mat-raised-button
+     color="accent"
+    type="submit">Save Project</button>
+  </form>
+  
+</mat-card>
+

@@ -1,0 +1,15 @@
+
+
+<mat-accordion multi="true" *ngIf="projects.length > 0">
+  <mat-expansion-panel *ngFor="let project of projects">
+    <mat-expansion-panel-header>
+      {{ project.title }}
+    </mat-expansion-panel-header>
+    <p>{{project.content}}</p>
+    <mat-action-row>
+      <a mat-raised-button mat-button color="primary" [routerLink]="['/edit', project.id]"> Edit</a>
+      <button mat-raised-button mat-button color="warn" (click)="onDeleteProject(project.id)">Delete</button>
+    </mat-action-row>
+  </mat-expansion-panel>
+</mat-accordion>
+<p class=" infor-text mat-body-1" *ngIf="projects.length <=0"> No projects added yet!</p>
